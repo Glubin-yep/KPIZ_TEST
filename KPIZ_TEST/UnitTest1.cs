@@ -1,11 +1,8 @@
-using NUnit.Framework;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using SeleniumExtras.WaitHelpers;
-using OpenQA.Selenium.Interactions;
-using static System.Collections.Specialized.BitVector32;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace KPIZ_TEST
 {
@@ -43,9 +40,9 @@ namespace KPIZ_TEST
             [Test]
             public void Login()
             {
-                Driver.FindElement(By.Id("header-account-label")).Click();
-                Driver.FindElement(By.Id("email")).SendKeys(ValidEmail);
-                Driver.FindElement(By.Id("password")).SendKeys(ValidPassword);
+                ClickElement(By.Id("header-account-label"), "Account Menu");
+                EnterText(By.Id("email"), ValidEmail, "Email");
+                EnterText(By.Id("password"), ValidPassword, "Password");
 
                 IWebElement loginButton = Driver.FindElement(By.CssSelector("button.btn.btn-primary.btn-lg.d-block"));
                 Actions actions = new Actions(Driver);
@@ -53,9 +50,6 @@ namespace KPIZ_TEST
                 loginButton.Click();
 
                 WebDriverWait.Until(ExpectedConditions.UrlToBe(BaseUrl + "account-overview/"));
-
-
-                Console.WriteLine("Login completed successfully");
             }
 
             [Test]
@@ -63,12 +57,9 @@ namespace KPIZ_TEST
             {
                 Login();
 
-                IWebElement accountButton = Driver.FindElement(By.Id("header-account-label"));
-                Actions actions = new Actions(Driver);
-                actions.MoveToElement(accountButton).Perform();
+                ClickElement(By.Id("header-account-label"), "Account Menu");
+                ClickElement(By.CssSelector(".header-dropdown-section.bg-grey-200.text-center"), "Logout Menu");
 
-                Driver.FindElement(By.CssSelector(".header-dropdown-section.bg-grey-200.text-center")).Click();
-                Console.Write(accountButton.Text);
             }
 
             [Test]
@@ -78,20 +69,36 @@ namespace KPIZ_TEST
 
                 Driver.Navigate().GoToUrl(BaseUrl + ProductUrl);
 
-                WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector(".btn.btn-sm.btn-link.link-2.fw-bold")));
-                Driver.FindElement(By.CssSelector(".btn.btn-sm.btn-link.link-2.fw-bold")).Click();
+                ClickElement(By.CssSelector(".btn.btn-sm.btn-link.link-2.fw-bold"), "Add to Favorites Button");
 
-                WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(By.Id("header-account-label")));
-                Driver.FindElement(By.Id("header-account-label")).Click();
+                ClickElement(By.Id("header-account-label"), "Account Menu");
 
-                WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(By.CssSelector("li a[href='favorites']")));
-                Driver.FindElement(By.CssSelector("li a[href='favorites']")).Click();
+                ClickElement(By.CssSelector("li a[href='favorites']"), "Favorites Link");
+
 
                 var favoritesList = Driver.FindElement(By.CssSelector(".pfAccountProduct.panel"));
-                Assert.IsTrue(favoritesList.Text.Contains(ProductName));
-                Driver.FindElement(By.CssSelector(".btn-close.pfAccountProduct-remove")).Click();
+                Assert.IsTrue(favoritesList.Text.Contains(ProductName), "Product not found in Favorites");
+
+                ClickElement(By.CssSelector(".btn-close.pfAccountProduct-remove"), "Remove from Favorites Button");
             }
 
+            private void ClickElement(By locator, string description = "")
+            {
+                WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(locator)).Click();
+                if (!string.IsNullOrEmpty(description))
+                {
+                    Console.WriteLine($"Clicked element: {description}"); 
+                }
+            }
+
+            private void EnterText(By locator, string text, string description = "")
+            {
+                WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(locator)).SendKeys(text);
+                if (!string.IsNullOrEmpty(description))
+                {
+                    Console.WriteLine($"Entered text '{text}' in {description}");
+                }
+            }
         }
     }
 }
