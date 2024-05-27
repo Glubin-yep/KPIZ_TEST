@@ -32,6 +32,7 @@ namespace KPIZ_TEST
             [TearDown]
             public void TearDown()
             {
+                Logout();
                 Driver?.Quit();
                 Driver?.Dispose();
 
@@ -55,7 +56,6 @@ namespace KPIZ_TEST
             [Test]
             public void Logout()
             {
-                Login();
 
                 ClickElement(By.Id("header-account-label"), "Account Menu");
                 ClickElement(By.CssSelector(".header-dropdown-section.bg-grey-200.text-center"), "Logout Menu");
@@ -87,7 +87,7 @@ namespace KPIZ_TEST
                 WebDriverWait.Until(ExpectedConditions.ElementToBeClickable(locator)).Click();
                 if (!string.IsNullOrEmpty(description))
                 {
-                    Console.WriteLine($"Clicked element: {description}"); 
+                    Console.WriteLine($"Clicked element: {description}");
                 }
             }
 
