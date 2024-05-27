@@ -35,15 +35,13 @@ namespace KPIZ_TEST
             [TearDown]
             public void TearDown()
             {
-                if (Driver != null)
-                {
-                    Driver.Quit();
-                    Driver.Dispose();
-                }
+                Driver?.Quit();
+                Driver?.Dispose();
+
             }
 
             [Test]
-            public  void Login()
+            public void Login()
             {
                 Driver.FindElement(By.Id("header-account-label")).Click();
                 Driver.FindElement(By.Id("email")).SendKeys(ValidEmail);
@@ -56,7 +54,7 @@ namespace KPIZ_TEST
 
                 WebDriverWait.Until(ExpectedConditions.UrlToBe(BaseUrl + "account-overview/"));
 
-                
+
                 Console.WriteLine("Login completed successfully");
             }
 
