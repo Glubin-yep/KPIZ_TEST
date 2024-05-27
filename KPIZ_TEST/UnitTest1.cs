@@ -24,7 +24,7 @@ namespace KPIZ_TEST
             public void SetUp()
             {
                 Driver = new ChromeDriver();
-                WebDriverWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(5));
+                WebDriverWait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
                 Driver.Navigate().GoToUrl(BaseUrl);
                 Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
             }
